@@ -7,8 +7,14 @@
 class Model {
   String? description;
   bool check = false;
+  DateTime dates;
+  String ? optionaldiscription;
 
-  Model(this.description, this.check);
+
+
+
+  Model(this.description, this.check, this.dates,this.optionaldiscription
+      );
 
   // Convert Model object to a Map for serialization
   Map<String, dynamic> toMap() {
@@ -16,6 +22,8 @@ class Model {
       'description': description,
 
       'check': check,
+      'dates': dates,
+      'title':optionaldiscription
     };
   }
 
@@ -24,6 +32,8 @@ class Model {
     return Model(
       map['description'],
       map['check'],
+      map['dates'],
+      map['title'],
     );
   }
 }

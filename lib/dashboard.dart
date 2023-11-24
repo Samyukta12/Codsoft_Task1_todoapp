@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:todo/model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,16 +11,18 @@ class Dashboard extends StatefulWidget {
 
 class _MyAppState extends State<Dashboard> {
   List<Model> items = [];
+  TimeOfDay dates = TimeOfDay.now();
 
-  // textformfiel controller store garene
+  // textformfiel controller store garenez
   late TextEditingController comingtext;
   late SharedPreferences sp;
+  late TextEditingController optionalcomingtext;
 
 // textediting controllerlai initialize gareko
   @override
   void initState() {
     comingtext = TextEditingController();
-
+    optionalcomingtext = TextEditingController();
     super.initState();
   }
 
@@ -34,6 +37,10 @@ class _MyAppState extends State<Dashboard> {
             title: Center(
               child: Text(
                 'Todo',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -54,36 +61,83 @@ class _MyAppState extends State<Dashboard> {
                             decoration: BoxDecoration(
                                 color: Colors.purple[200],
                                 borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            child: Column(
                               children: [
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Checkbox(
-                                        activeColor: Colors.white,
-                                        checkColor: Colors.purple,
-                                        focusColor: Colors.white,
-                                        value: items[index].check,
-                                        onChanged: (value) {
-                                          items[index].check = value!;
-                                          setState(() {});
-                                        }),
-                                    Padding(
-                                      padding: const EdgeInsets.all(18.0),
-                                      child: Text(
-                                        items[index].description.toString(),
+                                    Row(
+                                      children: [
+                                        Checkbox(
+                                            activeColor: Colors.white,
+                                            checkColor: Colors.purple,
+                                            focusColor: Colors.white,
+                                            value: items[index].check,
+                                            onChanged: (value) {
+                                              items[index].check = value!;
+                                              setState(() {});
+                                            }),
+                                        Padding(
+                                          padding: const EdgeInsets.all(18.0),
+                                          child: Text(
+                                            items[index].description.toString(),
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black87),
+                                          ),
+                                        ),
+
+                                      ],
+
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(items[index].optionaldiscription.toString()),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        // dates.format(context).toString(),
+                                        // // items[index].dates.toString(),
+                                        "${(items[index].dates.hour + 5) % 24}:${(items[index].dates.minute + 45) % 60}",
+
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500,
                                             color: Colors.black87),
                                       ),
-                                    ),
-                                  ],
+
+
+
+
+
+
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [],
                                 ),
                                 Row(
                                   children: [
-                                    ElevatedButton(
+                                    Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: ElevatedButton(
+                                          onPressed: timePick,
+                                          child: Icon(Icons.timer)),
+                                    ),
 
+
+
+
+                                    ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.purple[100]),
                                       onPressed: () {
@@ -96,7 +150,7 @@ class _MyAppState extends State<Dashboard> {
                                       child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor:
-                                              Colors.purple[100]),
+                                                  Colors.purple[100]),
                                           onPressed: () {
                                             items.removeAt(index);
 
@@ -120,33 +174,65 @@ class _MyAppState extends State<Dashboard> {
         builder: (BuildContext context) {
           return AlertDialog(
             actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: CupertinoTextField(
-                    textCapitalization: TextCapitalization.words,
-                    placeholderStyle: TextStyle(fontSize: 15),
-                    controller: comingtext,
-                    placeholder: 'Enter task name', //hint text
-                    suffix: Container(
-                      color: Colors.purple[100],
-                      child: GestureDetector(
-                          onTap: () {
-                            items.add(Model(comingtext.text, false));
-                            Navigator.pop(context);
-                            setState(() {});
-                            comingtext.clear();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Add ",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          )),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CupertinoTextField(
+                  textCapitalization: TextCapitalization.words,
+                  placeholderStyle: TextStyle(fontSize: 15),
+                  controller: comingtext,
+                  placeholder: 'Enter task name',
+                  //hint text
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CupertinoTextField(
+                  textCapitalization: TextCapitalization.words,
+                  placeholderStyle: TextStyle(fontSize: 15),
+                  controller: optionalcomingtext,
+                  placeholder: 'Enter optional description',
+                  //hint text
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      if (comingtext.text != "") {
+                        items.add(Model(comingtext.text, false,
+                            DateTime.timestamp(), optionalcomingtext.text));
+                        Navigator.pop(context);
+
+                        setState(() {});
+                        optionalcomingtext.clear();
+                        comingtext.clear();
+                      } else {
+                        //  adding show(context) method to display the Flushbar
+                        Flushbar(
+                          message: "Please add todo name",
+                          icon: Icon(
+                            Icons.error,
+                            size: 28.0,
+                            color: Colors.blue[300],
+                          ),
+                          duration: Duration(seconds: 3),
+                          leftBarIndicatorColor: Colors.blue[300],
+                        )..show(context);
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Add"),
+                      ),
                     ),
-                  ))
+                  ),
+                ),
+              )
             ],
           );
         });
@@ -179,5 +265,15 @@ class _MyAppState extends State<Dashboard> {
             ],
           );
         });
+  }
+
+  void timePick() async {
+    await showTimePicker(context: context, initialTime: TimeOfDay.now())
+        .then((value) {
+      setState(() {
+        dates = value!;
+      });
+      setState(() {});
+    });
   }
 }
