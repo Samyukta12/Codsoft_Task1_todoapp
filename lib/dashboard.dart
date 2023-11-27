@@ -103,45 +103,34 @@ class _MyAppState extends State<Dashboard> {
                                 color: Colors.purple[200],
                                 borderRadius: BorderRadius.circular(10)),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  // mainAxisAlignment:
+                                  //     MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Checkbox(
-                                            activeColor: Colors.white,
-                                            checkColor: Colors.purple,
-                                            focusColor: Colors.white,
-                                            value: items[index].check,
-                                            onChanged: (value) {
-                                              items[index].check = value!;
-                                              setState(() {});
-                                            }),
-                                        Padding(
-                                          padding: const EdgeInsets.all(18.0),
-                                          child: Expanded(
-                                            child: Text(
-                                              items[index].description.toString(),
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.black87),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                    Checkbox(
+                                        activeColor: Colors.white,
+                                        checkColor: Colors.purple,
+                                        focusColor: Colors.white,
+                                        value: items[index].check,
+                                        onChanged: (value) {
+                                          items[index].check = value!;
+                                          setState(() {});
+                                        }),
+
+
+                                    Padding(
+                                      padding: const EdgeInsets.all(18.0),
+                                      child: Text(
+                                        items[index].description.toString(),
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black87),
+                                      ),
                                     ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(items[index]
-                                              .optionaldiscription
-                                              .toString()),
-                                        ),
-                                      ],
-                                    )
                                   ],
                                 ),
                                 // Padding(
@@ -161,9 +150,18 @@ class _MyAppState extends State<Dashboard> {
                                 //     ],
                                 //   ),
                                 // ),
-                                Row(
-                                  children: [],
+
+
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(items[index]
+                                      .optionaldiscription
+                                      .toString()),
                                 ),
+
+
+
                                 Row(
                                   children: [
                                     // Padding(
@@ -172,6 +170,10 @@ class _MyAppState extends State<Dashboard> {
                                     //       onPressed: timePick,
                                     //       child: Icon(Icons.timer)),
                                     // ),
+
+
+
+
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.purple[100]),
@@ -210,8 +212,9 @@ class _MyAppState extends State<Dashboard> {
           return AlertDialog(
             actions: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(left: 8.0,right: 8,bottom: 8,top: 25),
                 child: CupertinoTextField(
+                  maxLength: 27,
                   textCapitalization: TextCapitalization.words,
                   placeholderStyle: TextStyle(fontSize: 15),
                   controller: comingtext,
@@ -236,7 +239,7 @@ class _MyAppState extends State<Dashboard> {
                     onTap: () {
                       if (comingtext.text != "") {
                         items.add(Model(comingtext.text, false,
-                            DateTime.timestamp(), optionalcomingtext.text));
+                             optionalcomingtext.text));
                         Navigator.pop(context);
 
                         setState(() {});

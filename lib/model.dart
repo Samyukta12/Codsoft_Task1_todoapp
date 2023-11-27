@@ -7,13 +7,13 @@
 class Model {
   String? description;
   bool check = false;
-  DateTime dates;
+  // DateTime dates;
   String ? optionaldiscription;
 
 
 
 
-  Model(this.description, this.check, this.dates,this.optionaldiscription
+  Model(this.description, this.check, this.optionaldiscription
       );
 
   // Convert Model object to a Map for serialization
@@ -22,7 +22,7 @@ class Model {
       'description': description,
 
       'check': check,
-      'dates': dates,
+      // 'dates': dates,
       'title':optionaldiscription
     };
   }
@@ -32,7 +32,7 @@ class Model {
     return Model(
       map['description'],
       map['check'],
-      map['dates'],
+      // map['dates'],
       map['title'],
     );
   }
