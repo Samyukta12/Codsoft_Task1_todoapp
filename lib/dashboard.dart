@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
@@ -11,19 +12,49 @@ class Dashboard extends StatefulWidget {
 
 class _MyAppState extends State<Dashboard> {
   List<Model> items = [];
-  TimeOfDay dates = TimeOfDay.now();
+  // TimeOfDay dates = TimeOfDay.now();
 
-  // textformfiel controller store garenez
+  // textformfiel controller store garne
   late TextEditingController comingtext;
-  late SharedPreferences sp;
   late TextEditingController optionalcomingtext;
+
+  late SharedPreferences sp;
+
+  List<String> listofvalue = [];
+
+  Map mapvalue = {};
+
+  List<String>? listofstring;
+
+  initilize() async {
+    sp = await SharedPreferences.getInstance();
+
+    List<String>? cominglist = await sp.getStringList("data");
+
+    items= cominglist!.map((e) => Model.fromMap(json.decode(e))).toList();
+    setState(() {});
+  }
 
 // textediting controllerlai initialize gareko
   @override
   void initState() {
+    initilize();
+
     comingtext = TextEditingController();
     optionalcomingtext = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+
+
+    listofvalue = items.map((save) {
+      return json.encode(save.toMap());
+    }).toList();
+
+    sp.setStringList("data", listofvalue);
+    super.dispose();
   }
 
   @override
@@ -35,11 +66,21 @@ class _MyAppState extends State<Dashboard> {
             shadowColor: Colors.amber,
             backgroundColor: Colors.purple,
             title: Center(
-              child: Text(
-                'Todo',
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
+              child: GestureDetector(
+                onTap: (){
+                  listofvalue = items.map((save) {
+                    return json.encode(save.toMap());
+                  }).toList();
+
+                  sp.setStringList("data", listofvalue);
+
+                },
+                child: Text(
+                  'Todo',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -80,63 +121,57 @@ class _MyAppState extends State<Dashboard> {
                                             }),
                                         Padding(
                                           padding: const EdgeInsets.all(18.0),
-                                          child: Text(
-                                            items[index].description.toString(),
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87),
+                                          child: Expanded(
+                                            child: Text(
+                                              items[index].description.toString(),
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black87),
+                                            ),
                                           ),
                                         ),
-
                                       ],
-
                                     ),
                                     Row(
                                       children: [
-                                        Text(items[index].optionaldiscription.toString()),
+                                        Expanded(
+                                          child: Text(items[index]
+                                              .optionaldiscription
+                                              .toString()),
+                                        ),
                                       ],
                                     )
                                   ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        // dates.format(context).toString(),
-                                        // // items[index].dates.toString(),
-                                        "${(items[index].dates.hour + 5) % 24}:${(items[index].dates.minute + 45) % 60}",
-
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black87),
-                                      ),
-
-
-
-
-
-
-                                    ],
-                                  ),
-                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.all(8.0),
+                                //   child: Row(
+                                //     children: [
+                                //       Text(
+                                //         // dates.format(context).toString(),
+                                //         // // items[index].dates.toString(),
+                                //         "${(items[index].dates.hour + 5) % 24}:${(items[index].dates.minute + 45) % 60}",
+                                //
+                                //         style: TextStyle(
+                                //             fontSize: 18,
+                                //             fontWeight: FontWeight.w500,
+                                //             color: Colors.black87),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                                 Row(
                                   children: [],
                                 ),
                                 Row(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: ElevatedButton(
-                                          onPressed: timePick,
-                                          child: Icon(Icons.timer)),
-                                    ),
-
-
-
-
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(15.0),
+                                    //   child: ElevatedButton(
+                                    //       onPressed: timePick,
+                                    //       child: Icon(Icons.timer)),
+                                    // ),
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.purple[100]),
@@ -267,13 +302,13 @@ class _MyAppState extends State<Dashboard> {
         });
   }
 
-  void timePick() async {
-    await showTimePicker(context: context, initialTime: TimeOfDay.now())
-        .then((value) {
-      setState(() {
-        dates = value!;
-      });
-      setState(() {});
-    });
-  }
+  // void timePick() async {
+  //   await showTimePicker(context: context, initialTime: TimeOfDay.now())
+  //       .then((value) {
+  //     setState(() {
+  //       dates = value!;
+  //     });
+  //     setState(() {});
+  //   });
+  // }
 }
